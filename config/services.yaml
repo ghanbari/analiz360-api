@@ -1,0 +1,111 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'fa'
+
+    router.request_context.host: '%env(APP_HOST)%'
+    router.request_context.scheme: '%env(APP_SCHEME)%'
+    router.request_context.base_url: '%env(APP_BASE_URL)%'
+
+    registration:
+        username: '%env(APP_REGISTRATION_TYPE)%'
+        sms:
+            try_count: '%env(APP_REGISTRATION_SMS_TRY_COUNT)%'
+            timeout: '%env(APP_REGISTRATION_SMS_TIMEOUT)%'
+            priority: '%env(APP_REGISTRATION_SMS_PRIORITY)%'
+        email:
+            priority: '%env(APP_REGISTRATION_EMAIL_PRIORITY)%'
+            sender_email: '%env(APP_REGISTRATION_EMAIL_SENDER)%'
+        otp:
+            max_req:
+                ip: '%env(APP_OTP_LIMITATION_FOR_IP)%'
+                user: '%env(APP_OTP_LIMITATION_FOR_USER)%'
+                authenticated_user: '%env(APP_OTP_LIMITATION_FOR_AUTHENTICATED_USER)%'
+                user_ip: '%env(APP_OTP_LIMITATION_FOR_USER_AND_IP)%'
+            ttl: '%env(APP_OTP_TTL)%'
+            allowed_guess: '%env(APP_OTP_ALLOWED_GUESS)%'
+        credit: '%env(APP_REGISTRATION_INIT_CREDIT)%'
+    sms:
+        default_provider: ''
+        providers:
+            kavenegar:
+                api_key: '%env(APP_SMS_PROVIDER_API_KEY)%'
+                sender_number: '%env(APP_SMS_PROVIDER_SENDER_NUMBER)%'
+        sender:
+            timeout: 300
+            range: [36000, 300] # [second ago, second later]
+        status_checker:
+            timeout: 150
+            max_check_count: 3
+    crawler:
+        failed:
+            try_after: 10800
+    zarinpal:
+        id: 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX'
+    env(MERCURE_PUBLISH_URL): ''
+    env(MERCURE_JWT_SECRET): ''
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $crawlerLogger: '@monolog.logger.crawler'
+            $auditLogger: '@monolog.logger.audit'
+            $proxyLogger: '@monolog.logger.proxy'
+
+    _instanceof:
+        App\Crawler\DomainAnalyzerInterface:
+            tags: ['app.domain.analyzer']
+        App\Proxy\ProxyRepositoryInterface:
+            tags: ['app.proxy.repository']
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    App\Serializer\ContextBuilder:
+        decorates: 'api_platform.serializer.context_builder'
+        arguments: [ '@App\Serializer\ContextBuilder.inner' , '@serializer.name_converter.camel_case_to_snake_case']
+        autoconfigure: false
+
+    App\Doctrine\EventSubscriber\:
+        resource: '../src/Doctrine/EventSubscriber'
+        tags: ['doctrine.event_subscriber']
+
+    App\Repository\CategoryRepository:
+        tags: ['doctrine.repository_service']
+
+    App\Command\AlexaCommand:
+        arguments:
+            $alexaLogger: '@monolog.logger.alexa'
+            $crawlerConfig: "%crawler%"
+            $errorHandler: '@monolog.handler.alexa_error'
+
+    App\Command\DomainAnalyzerCommand:
+        arguments:
+            $analyzers: !tagged app.domain.analyzer
+
+    App\Proxy\ProxyManager:
+        arguments:
+            $proxyRepositories: !tagged app.proxy.repository
+
+    'App\Doctrine\Extension\ReportAccessCheckExtension':
+        tags:
+            - { name: api_platform.doctrine.orm.query_extension.collection, priority: -18 }
+            - { name: api_platform.doctrine.orm.query_extension.item, priority: -18 }
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones

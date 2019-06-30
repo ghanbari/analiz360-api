@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="fa" target-language="fa" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="qXzZ1fj" resname="The number of your failed login exceeds the limit">
+        <source>The number of your failed login exceeds the limit</source>
+        <target>تعداد دفعات درخواست کد امنیتی توسط شما زیاد بوده است و تا ۲۴ ساعت آینده امکان درخواست مجدد کد وجود ندارد</target>
+      </trans-unit>
+      <trans-unit id="5mACG2h" resname="Your token has been sent, please wait">
+        <source>Your token has been sent, please wait</source>
+        <target>__Your token has been sent, please wait</target>
+      </trans-unit>
+      <trans-unit id="OssXCFl" resname="Your token is send to %receptor%">
+        <source>Your token is send to %receptor%</source>
+        <target>__Your token is send to %receptor%</target>
+      </trans-unit>
+      <trans-unit id="niKoiuj" resname="User %username% is not exists.">
+        <source>User %username% is not exists.</source>
+        <target>__User %username% is not exists.</target>
+      </trans-unit>
+      <trans-unit id="VJz311E" resname="Your temporary token is: %token%">
+        <source>Your temporary token is: %token%</source>
+        <target>__Your temporary token is: %token%</target>
+      </trans-unit>
+      <trans-unit id="W.aXW8N" resname="This temporary token is expired, please request again">
+        <source>This temporary token is expired, please request again</source>
+        <target>__This temporary token is expired, please request again</target>
+      </trans-unit>
+      <trans-unit id="K1WsKrM" resname="Your ip is changed and your register request expired, please try again">
+        <source>Your ip is changed and your register request expired, please try again</source>
+        <target>__Your ip is changed and your register request expired, please try again</target>
+      </trans-unit>
+      <trans-unit id="7gdEEi5" resname="This temporary token is expired, please register again">
+        <source>This temporary token is expired, please register again</source>
+        <target>__This temporary token is expired, please register again</target>
+      </trans-unit>
+      <trans-unit id="9bkeDh." resname="Your temporary token is wrong">
+        <source>Your temporary token is wrong</source>
+        <target>__Your temporary token is wrong</target>
+      </trans-unit>
+      <trans-unit id="zRymttI" resname="The number of failed login From your IP exceeds the limit">
+        <source>The number of failed login From your IP exceeds the limit</source>
+        <target>__The number of failed login From your IP exceeds the limit</target>
+      </trans-unit>
+      <trans-unit id="27Pl17y" resname="Order is not exists.">
+        <source>Order is not exists.</source>
+        <target>سفارش یافت نشد</target>
+      </trans-unit>
+      <trans-unit id="wb8KawY" resname="Order was failed.">
+        <source>Order was failed.</source>
+        <target>سفارش با خطا مواجه شد</target>
+      </trans-unit>
+      <trans-unit id="X6yzu8t" resname="Order type is not payment type.">
+        <source>Order type is not payment type.</source>
+        <target>واحد پولی سفارش و تراکنش تطابق ندارند</target>
+      </trans-unit>
+      <trans-unit id="bGoJOln" resname="Order Authority is not same with request Authority.">
+        <source>Order Authority is not same with request Authority.</source>
+        <target>کد تراکنش با کد سفارش تطابق ندارند</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,33 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+
+homepage:
+  path: /
+  controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction
+  defaults:
+    permanent: true
+    keepQueryParams: true
+    path: "/panel"
+
+api_login_check:
+  path: /api/login_check
+
+api_register_by_referer:
+  path: /register/{code}
+  controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::redirectAction
+  defaults:
+    route: api_register_by_referer_convert
+
+api_register_by_referer_convert:
+  path: "/register?ref=$code"
+  controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController::urlRedirectAction
+  defaults:
+    permanent: true
+    keepQueryParams: true
+    path: "/#/pages/register"
+
+verify_payment:
+  path: /payment/{orderId}/verify
+  controller: App\Controller\verifyPaymentAction
+  methods: [GET]

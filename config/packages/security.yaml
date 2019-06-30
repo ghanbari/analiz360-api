@@ -1,0 +1,71 @@
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+        App\Entity\User:
+            algorithm: argon2i
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
+
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+#        my_memory_provider:
+#            memory:
+#                users:
+#                    foo:
+#                        password:            foo
+#                        roles:               ROLE_USER
+#                    bar:
+#                        password:            bar
+#                        roles:               [ROLE_SUPER_ADMIN]
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+
+        # used to reload user from session & other features (e.g. switch_user)
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        login:
+            pattern:  ^/api/login
+            stateless: true
+            anonymous: true
+            json_login:
+                check_path:               /api/login_check
+                provider:                 app_user_provider
+                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern:   ^/api
+            stateless: true
+            anonymous: true #todo: remove
+            guard:
+                provider:                 app_user_provider
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+    #TODO: uncomment this lines
+    access_control:
+        - { path: ^/api/statistics, roles: ROLE_USER }
+        - { path: ^/api/(city|cities), roles: ROLE_USER }
+        - { path: ^/api/provinces, roles: ROLE_USER }
+        - { path: ^/api/profile, roles: ROLE_USER }
+        - { path: ^/api/domains, roles: ROLE_USER }
+        - { path: ^/api/domain_watchers, roles: ROLE_USER }
+        - { path: ^/api/wallets, roles: ROLE_USER }
+        - { path: ^/api/orders, roles: ROLE_USER }
+        - { path: ^/api/products, roles: ROLE_USER }
+        - { path: ^/api/domain_verifies, roles: ROLE_USER }
+        - { path: ^/api/media, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/recovery, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/register$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/one_time_passwords$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/config$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/(docs.*|login)$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/(_(profiler|wdt)|css|images|js)/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api,       roles: ROLE_ADMIN }

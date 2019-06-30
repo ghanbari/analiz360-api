@@ -1,0 +1,44 @@
+services:
+    Monolog\Formatter\JsonFormatter: ~
+
+    Monolog\Processor\IntrospectionProcessor:
+        tags:
+            - { name: monolog.processor }
+
+    Monolog\Processor\MemoryUsageProcessor:
+        tags:
+            - { name: monolog.processor }
+
+    Symfony\Bridge\Monolog\Processor\DebugProcessor:
+        tags:
+            - { name: monolog.processor }
+
+    Symfony\Bridge\Monolog\Processor\RouteProcessor:
+        tags:
+            - { name: monolog.processor }
+
+    Symfony\Bridge\Monolog\Processor\TokenProcessor:
+        arguments: ['@security.token_storage']
+        tags:
+            - { name: monolog.processor }
+
+    Symfony\Bridge\Monolog\Processor\WebProcessor:
+        tags:
+            - { name: monolog.processor }
+
+    Symfony\Bridge\Monolog\Processor\ConsoleCommandProcessor:
+        arguments: [true, true]
+        tags:
+            - { name: monolog.processor }
+
+    Monolog\Processor\ProcessIdProcessor:
+        tags:
+            - { name: monolog.processor }
+
+    Monolog\Processor\TagProcessor:
+        tags:
+            - { name: monolog.processor }
+
+    Monolog\Processor\UidProcessor:
+        tags:
+            - { name: monolog.processor }
