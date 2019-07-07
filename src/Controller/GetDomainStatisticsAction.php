@@ -4,17 +4,14 @@ namespace App\Controller;
 
 use App\Api\Dto\DomainStatistics;
 use App\Entity\Domain;
-use App\Entity\DomainFreeWatching;
 use App\Entity\Report;
 use App\Repository\DomainWatcherRepository;
 use App\Repository\GeographyRepository;
-use App\Repository\OrderRepository;
 use App\Repository\ReportRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GetDomainStatisticsAction extends AbstractController
@@ -33,7 +30,9 @@ class GetDomainStatisticsAction extends AbstractController
         }
 
         $secondLastReportDate = $this->getSecondLastReportDate($domain);
-        $history = $this->getAvailableHistory($domain);
+        /** @var DomainWatcherRepository $domainWatcherRepo */
+        $domainWatcherRepo = $this->getDoctrine()->getRepository('App:DomainWatcher');
+        $history = $domainWatcherRepo->getAvailableHistory($domain, $this->getUser());
 
         $from = new \DateTime(sprintf('-%d days', $history));
         if (isset($dateQuery['after'])) {
@@ -92,44 +91,6 @@ class GetDomainStatisticsAction extends AbstractController
         }
 
         return $statistic;
-    }
-
-    /**
-     * @param Domain $domain
-     *
-     * @return int|null
-     *
-     * @throws NonUniqueResultException
-     */
-    private function getAvailableHistory(Domain $domain)
-    {
-        $user = $this->getUser();
-        /** @var DomainWatcherRepository $domainWatcherRepo */
-        $domainWatcherRepo = $this->getDoctrine()->getRepository('App:DomainWatcher');
-        $domainWatcher = $domainWatcherRepo->getActivePlan($domain->getId(), $user->getId());
-        if ($domainWatcher) {
-            $history = $domainWatcher->getHistory();
-        } else {
-            $history = 3;
-            $freeRepo = $this->getDoctrine()->getRepository('App:DomainFreeWatching');
-            $freeWatching = $freeRepo->findOneBy(['domain' => $domain->getId(), 'watcher' => $user->getId(), 'createdAt' => new \DateTime()]);
-            if (!$freeWatching) {
-                $usageCount = $freeRepo->count(['watcher' => $user->getId(), 'createdAt' => new \DateTime()]);
-                /** @var OrderRepository $orderRepo */
-                $orderRepo = $this->getDoctrine()->getRepository('App:Order');
-                $allowedCount = $orderRepo->getDomainFreeWatchingLimitation($user->getId());
-
-                if ($usageCount < $allowedCount) {
-                    $freeWatching = new DomainFreeWatching($domain, $user);
-                    $this->getDoctrine()->getManager()->persist($freeWatching);
-                    $this->getDoctrine()->getManager()->flush($freeWatching);
-                } else {
-                    throw new AccessDeniedHttpException('You must buy a plan');
-                }
-            }
-        }
-
-        return $history;
     }
 
     /**

@@ -2,9 +2,13 @@
 
 namespace App\Repository;
 
+use App\Entity\Domain;
+use App\Entity\DomainFreeWatching;
 use App\Entity\DomainWatcher;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * @method DomainWatcher|null find($id, $lockMode = null, $lockVersion = null)
@@ -61,32 +65,42 @@ class DomainWatcherRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    // /**
-    //  * @return DomainWatcher[] Returns an array of DomainWatcher objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Domain $domain
+     * @param User   $user
+     *
+     * @return int|null
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function getAvailableHistory(Domain $domain, User $user)
     {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('d.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $domainWatcher = $this->getActivePlan($domain->getId(), $user->getId());
+        if ($domainWatcher) {
+            $history = $domainWatcher->getHistory();
+        } else {
+            $history = 3;
+            $freeRepo = $this->getEntityManager()->getRepository('App:DomainFreeWatching');
+            //TODO: createdAt is DateTime and not date
+            $freeWatching = $freeRepo->findOneBy(['domain' => $domain->getId(), 'watcher' => $user->getId(), 'createdAt' => new \DateTime()]);
+            if (!$freeWatching) {
+                $usageCount = $freeRepo->count(['watcher' => $user->getId(), 'createdAt' => new \DateTime()]);
+                /** @var OrderRepository $orderRepo */
+                $orderRepo = $this->getEntityManager()->getRepository('App:Order');
+                $allowedCount = $orderRepo->getDomainFreeWatchingLimitation($user->getId());
 
-    /*
-    public function findOneBySomeField($value): ?DomainWatcher
-    {
-        return $this->createQueryBuilder('d')
-            ->andWhere('d.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+                if ($usageCount < $allowedCount) {
+                    $freeWatching = new DomainFreeWatching($domain, $user);
+                    $this->getEntityManager()->persist($freeWatching);
+                    $this->getEntityManager()->flush($freeWatching);
+                } else {
+                    throw new AccessDeniedHttpException('You must buy a plan');
+                }
+            }
+        }
+
+        return $history;
     }
-    */
 }
