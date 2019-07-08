@@ -11,7 +11,9 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
  * @ORM\Entity(repositoryClass="App\Repository\CityRepository")
  * @ApiResource(
  *     attributes={"pagination_enabled"=false},
- *     collectionOperations={},
+ *     collectionOperations={
+ *          "get",
+ *     },
  *     itemOperations={"get"},
  *     normalizationContext={"groups"={"city", "city:province", "city:county"}, "enable_max_depth"=true}
  * )
