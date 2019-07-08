@@ -55,6 +55,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SmsMessage
 {
+    const TYPE_TEXT = 1;
+    const TYPE_VOICE = 2;
+    const TYPE_OTP = 3;
+
     use TimestampableEntity;
     use BlameableEntity;
 
@@ -201,6 +205,11 @@ class SmsMessage
      */
     private $sensitiveData;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $type;
+
     public function __construct()
     {
         $this->smsOutboxes = new ArrayCollection();
@@ -209,6 +218,7 @@ class SmsMessage
         $this->setPriority(0);
         $this->setStatus(SmsOutbox::STATUS_PREPARE);
         $this->setSensitiveData(false);
+        $this->setType(self::TYPE_TEXT);
     }
 
     public function parseMessage(User $user = null)
@@ -463,6 +473,18 @@ class SmsMessage
     public function setSensitiveData(bool $sensitiveData): self
     {
         $this->sensitiveData = $sensitiveData;
+
+        return $this;
+    }
+
+    public function getType(): ?int
+    {
+        return $this->type;
+    }
+
+    public function setType(int $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

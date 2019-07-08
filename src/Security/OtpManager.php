@@ -103,6 +103,7 @@ class OtpManager extends AbstractController
 
         if ('phone' === $sendTo) {
             $message = new SmsMessage();
+            $message->setType(SmsMessage::TYPE_OTP);
             $message->setSensitiveData(true);
             $message->setReceptor($data->getReceptor());
             $message->setTime(new \DateTime());
