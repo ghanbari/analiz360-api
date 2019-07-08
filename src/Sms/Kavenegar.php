@@ -38,7 +38,7 @@ class Kavenegar implements SmsProviderInterface
     public function send(SmsMessage $message): ? SmsOutbox
     {
         try {
-            $this->logger->debug(sprintf('Send message to %s', $message->getReceptor()));
+            $this->logger->info(sprintf('Send message to %s', $message->getReceptor()));
             $result = $this->api->send(
                 $this->config['sender_number'],
                 $message->getReceptor(),
@@ -53,16 +53,19 @@ class Kavenegar implements SmsProviderInterface
             $outbox->setSender($this->config['sender_number']);
             $outbox->setStatus(SmsOutbox::STATUS_IN_QUEUE);
             $outbox->setSendTime(new \DateTime());
-            $this->logger->debug(sprintf('Result for message sent to %s', $message->getReceptor()), $result);
+            $this->logger->info(sprintf('Result for message sent to %s', $message->getReceptor()), $result);
 
             if (is_array($result)) {
                 $result = $result[0];
                 $outbox->setCost($result->cost);
                 $outbox->setTrackingCode($result->messageid);
             }
-
-            return $outbox;
         } catch (\Exception $e) {
+            $outbox = new SmsOutbox();
+            $outbox->setCreatedBy($message->getCreatedBy());
+            $outbox->setSender($this->config['sender_number']);
+            $outbox->setStatus(SmsOutbox::STATUS_FAILED_ON_SEND);
+            $outbox->setSendTime(new \DateTime());
             $this->logger->error(
                 sprintf(
                     'Can not send message to %s(%s: %s)',
@@ -73,6 +76,8 @@ class Kavenegar implements SmsProviderInterface
                 [$e->getTraceAsString()]
             );
         }
+
+        return $outbox;
     }
 
     public function sendBatch(array $messages)

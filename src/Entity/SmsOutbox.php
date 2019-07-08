@@ -22,6 +22,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class SmsOutbox
 {
+    const STATUS_FAILED_ON_SEND = -5;
     const STATUS_PREPARE = 0;
     const STATUS_IN_BUS = 5;
     const STATUS_IN_QUEUE = 10;

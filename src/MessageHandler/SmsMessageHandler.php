@@ -42,9 +42,13 @@ class SmsMessageHandler implements MessageHandlerInterface
     public function __invoke(SmsMessage $message)
     {
         $report = $this->smsProvider->send($message);
-        $report->setMessage($message);
+
+        if ($report) {
+            $report->setMessage($message);
+            $this->doctrine->getManager()->persist($report);
+        }
+
         $this->doctrine->getManager()->persist($message);
-        $this->doctrine->getManager()->persist($report);
         $this->doctrine->getManager()->flush();
     }
 }

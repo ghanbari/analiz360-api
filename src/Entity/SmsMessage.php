@@ -216,7 +216,7 @@ class SmsMessage
         $this->setMaxTryCount(1);
         $this->setTimeout(60);
         $this->setPriority(0);
-        $this->setStatus(SmsOutbox::STATUS_PREPARE);
+        $this->status = SmsOutbox::STATUS_PREPARE;
         $this->setSensitiveData(false);
         $this->setType(self::TYPE_TEXT);
     }
@@ -402,13 +402,12 @@ class SmsMessage
      */
     public function setStatus(int $status): self
     {
-        $this->status = $status;
-
         switch ($status) {
             case SmsOutbox::STATUS_BLOCKED:
             case SmsOutbox::STATUS_DELIVERED:
                 $this->status = $status;
                 break;
+            case SmsOutbox::STATUS_FAILED_ON_SEND:
             case SmsOutbox::STATUS_IN_BUS:
             case SmsOutbox::STATUS_PREPARE:
                 if (in_array($this->status, [SmsOutbox::STATUS_IN_BUS, SmsOutbox::STATUS_PREPARE])) {

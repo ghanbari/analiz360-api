@@ -84,17 +84,17 @@ class SmsCheckStatusCommand extends Command
 
         while (true) {
             $result = $repository->getUndefinedStatus(10, $this->maxCheckCount);
-            $this->logger->debug(sprintf('Get messages that its status is not finished: %d message', count($result)));
+            $this->logger->info(sprintf('Get messages that its status is not finished: %d message', count($result)));
 
             foreach ($result as $report) {
                 $this->provider->checkStatus($report);
             }
 
             if (empty($result)) {
-                $this->logger->debug(sprintf('Sleep checker for about %s seconds', $this->timeout));
+                $this->logger->info(sprintf('Sleep checker for about %s seconds', $this->timeout));
                 sleep($this->timeout);
             } else {
-                $this->logger->debug('Persist message status to db.');
+                $this->logger->info('Persist message status to db.');
                 $this->doctrine->getManager()->flush();
                 $this->doctrine->resetManager();
             }

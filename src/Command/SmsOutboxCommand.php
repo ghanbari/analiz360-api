@@ -79,7 +79,7 @@ class SmsOutboxCommand extends Command
         while (true) {
             $result = $repository->pullQueue(10, $this->range[0], $this->range[1]);
 
-            $this->logger->debug(sprintf('Pull from queue: %d message', count($result)));
+            $this->logger->info(sprintf('Pull from queue: %d message', count($result)));
 
             foreach ($result as $message) {
                 $outbox = $this->sender->send($message);
@@ -90,10 +90,10 @@ class SmsOutboxCommand extends Command
             }
 
             if (empty($result)) {
-                $this->logger->debug(sprintf('Sleep sender for about %s seconds', $this->timeout));
+                $this->logger->info(sprintf('Sleep sender for about %s seconds', $this->timeout));
                 sleep($this->timeout);
             } else {
-                $this->logger->debug('Persist message status to db.');
+                $this->logger->info('Persist message status to db.');
                 $this->doctrine->getManager()->flush();
                 $this->doctrine->resetManager();
             }
