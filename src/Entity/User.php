@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Api\Dto\EmailVerify;
 use App\Controller\CreateUserAction;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,11 +18,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use App\Api\Dto\EmailVerify;
 
 /**
  * @ApiResource(
- *     mercure="users/object.id",
  *     attributes={
  *          "normalization_context"={"groups"={"user:read", "media:read"}},
  *          "denormalization_context"={"groups"={}},
@@ -63,7 +62,7 @@ use App\Api\Dto\EmailVerify;
  *              "normalization_context"={"groups"={"user:read", "media:full-path"}},
  *              "denormalization_context"={"groups"={"user:update"}},
  *              "validation_groups"={"User", "User:auto"},
- *              "access_control"="previous_object === user",
+ *              "access_control"="previous_object.getId() === user.getId()",
  *              "access_control_message"="You can update your account only.",
  *          },
  *          "email_update"={
