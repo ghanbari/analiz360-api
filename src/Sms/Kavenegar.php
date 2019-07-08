@@ -49,7 +49,9 @@ class Kavenegar implements SmsProviderInterface
             );
 
             $outbox = new SmsOutbox();
-            $outbox->setCreatedBy($message->getCreatedBy());
+            if ($message->getCreatedBy()) {
+                $outbox->setCreatedBy($message->getCreatedBy());
+            }
             $outbox->setSender($this->config['sender_number']);
             $outbox->setStatus(SmsOutbox::STATUS_IN_QUEUE);
             $outbox->setSendTime(new \DateTime());
@@ -62,7 +64,9 @@ class Kavenegar implements SmsProviderInterface
             }
         } catch (\Exception $e) {
             $outbox = new SmsOutbox();
-            $outbox->setCreatedBy($message->getCreatedBy());
+            if ($message->getCreatedBy()) {
+                $outbox->setCreatedBy($message->getCreatedBy());
+            }
             $outbox->setSender($this->config['sender_number']);
             $outbox->setStatus(SmsOutbox::STATUS_FAILED_ON_SEND);
             $outbox->setSendTime(new \DateTime());
