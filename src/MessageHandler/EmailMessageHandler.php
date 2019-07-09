@@ -63,6 +63,8 @@ class EmailMessageHandler implements MessageHandlerInterface
         $this->sender->send($email);
         $message->setStatus(EmailMessage::STATUS_SENT);
 
+        $template = $this->doctrine->getManager()->merge($message->getTemplate());
+        $message->setTemplate($template);
         $this->doctrine->getManager()->persist($message);
         $this->doctrine->getManager()->flush();
     }

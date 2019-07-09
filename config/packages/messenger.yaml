@@ -7,3 +7,4 @@ framework:
         routing:
             # Route your messages to the transports
              'App\Entity\SmsMessage': amqp
+             'App\Entity\EmailMessage': amqp
