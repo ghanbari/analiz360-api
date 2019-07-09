@@ -11,39 +11,39 @@
       </trans-unit>
       <trans-unit id="5mACG2h" resname="Your token has been sent, please wait">
         <source>Your token has been sent, please wait</source>
-        <target>__Your token has been sent, please wait</target>
+        <target>توکن شما ارسال شد، لطفا منتظر بمانید</target>
       </trans-unit>
       <trans-unit id="OssXCFl" resname="Your token is send to %receptor%">
         <source>Your token is send to %receptor%</source>
-        <target>__Your token is send to %receptor%</target>
+        <target>توکن شما به %receptor% ارسال شد</target>
       </trans-unit>
       <trans-unit id="niKoiuj" resname="User %username% is not exists.">
         <source>User %username% is not exists.</source>
-        <target>__User %username% is not exists.</target>
+        <target>نام کاربری %username% وجود ندارد</target>
       </trans-unit>
       <trans-unit id="VJz311E" resname="Your temporary token is: %token%">
         <source>Your temporary token is: %token%</source>
-        <target>__Your temporary token is: %token%</target>
+        <target>توکن موقت شما : %token%</target>
       </trans-unit>
       <trans-unit id="W.aXW8N" resname="This temporary token is expired, please request again">
         <source>This temporary token is expired, please request again</source>
-        <target>__This temporary token is expired, please request again</target>
+        <target>توکن موقت شما منقضی شده است، مجدد درخواست دهید</target>
       </trans-unit>
       <trans-unit id="K1WsKrM" resname="Your ip is changed and your register request expired, please try again">
         <source>Your ip is changed and your register request expired, please try again</source>
-        <target>__Your ip is changed and your register request expired, please try again</target>
+        <target>آی پی آدرس ثبت نام شما تغییر کرده است، لطفا مجدد تلاش کنید</target>
       </trans-unit>
       <trans-unit id="7gdEEi5" resname="This temporary token is expired, please register again">
         <source>This temporary token is expired, please register again</source>
-        <target>__This temporary token is expired, please register again</target>
+        <target>توکن موقت شما منقضی شده است. مجدد عضو شوید</target>
       </trans-unit>
       <trans-unit id="9bkeDh." resname="Your temporary token is wrong">
         <source>Your temporary token is wrong</source>
-        <target>__Your temporary token is wrong</target>
+        <target>توکن موقت شما اشتباه است</target>
       </trans-unit>
       <trans-unit id="zRymttI" resname="The number of failed login From your IP exceeds the limit">
         <source>The number of failed login From your IP exceeds the limit</source>
-        <target>__The number of failed login From your IP exceeds the limit</target>
+        <target>تعداد ورود ناموفق از IP شما بیش از حد است</target>
       </trans-unit>
       <trans-unit id="27Pl17y" resname="Order is not exists.">
         <source>Order is not exists.</source>

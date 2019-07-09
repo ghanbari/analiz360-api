@@ -347,7 +347,7 @@
       </trans-unit>
       <trans-unit id="zRymttI" resname="The number of failed login From your IP exceeds the limit">
         <source>The number of failed login From your IP exceeds the limit</source>
-        <target>ooops</target>
+        <target>خطاهای ناموفق از آدرس آی پی شما از حد مجاز عبور کرده است</target>
       </trans-unit>
     </body>
   </file>
