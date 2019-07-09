@@ -40,6 +40,13 @@ parameters:
         status_checker:
             timeout: 150
             max_check_count: 3
+    email:
+        default_sender:
+            address: 'Analiz360ir@gmail.com'
+            name: 'Analiz 360'
+        sender:
+            timeout: 300
+            range: [36000, 300] # [second ago, second later]
     crawler:
         failed:
             try_after: 10800

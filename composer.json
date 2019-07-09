@@ -31,6 +31,8 @@
         "symfony/expression-language": "4.3.*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "4.3.*",
+        "symfony/google-mailer": "4.3.*",
+        "symfony/mailer": "4.3.*",
         "symfony/mercure-bundle": "*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/orm-pack": "*",

@@ -56,11 +56,12 @@ class EmailMessage
     use TimestampableEntity;
     use BlameableEntity;
 
-    const STATUS_PREPARE = 0;
-    const STATUS_IN_BUS = 5;
-    const STATUS_UNDELIVERED = 25;
-    const STATUS_DELIVERED = 30;
-    const STATUS_BLOCKED = 35;
+    const STATUS_PREPARE = 0; // Only save in db use null instead of this value
+    const STATUS_IN_BUS = 5; // In Queue
+    const STATUS_SENT = 10; // Was sent
+    const STATUS_DELIVERED = 30; // Delivered smtp report
+    const STATUS_FAILED = 35; // Can not deliver (smtp report)
+    const STATUS_OPENED = 50; // User open email (my url callback was loaded)
 
     /**
      * @var int message id
@@ -72,6 +73,8 @@ class EmailMessage
      * @Groups({"message:read"})
      */
     private $id;
+
+//    private $subject; #title
 
     /**
      * @var EmailTemplate The template that will be used for message body
@@ -161,6 +164,8 @@ class EmailMessage
      */
     private $senderEmail;
 
+//    private $channel #use channel instead of sender email. channel is relation with [address, name] fields.
+
     /**
      * @var ScheduledMessage which schedule created this message
      *
@@ -177,6 +182,8 @@ class EmailMessage
      */
     private $status;
 
+//    private $statusMessage;
+
     /**
      * @ORM\Column(type="boolean")
      */
@@ -187,6 +194,13 @@ class EmailMessage
         $this->setPriority(0);
         $this->setStatus(self::STATUS_PREPARE);
         $this->setSensitiveData(false);
+    }
+
+    public function getMessage()
+    {
+        $placeholders = array_map(function ($parameter) { return sprintf('{%s}', $parameter); }, $this->getTemplate()->getParameters());
+
+        return str_replace($placeholders, $this->getArguments(), $this->getTemplate()->getTemplate());
     }
 
     public function addUserAttributes(User $user)

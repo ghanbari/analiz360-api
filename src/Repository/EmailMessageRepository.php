@@ -18,7 +18,6 @@ class EmailMessageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EmailMessage::class);
 
-//        $this->addPullQuery();
         $this->addSendToAll();
     }
 
@@ -39,86 +38,24 @@ class EmailMessageRepository extends ServiceEntityRepository
             ->execute();
     }
 
-//    /**
-//     * @param int $count
-//     * @param int $agoSecond
-//     * @param int $laterSecond
-//     * @return EmailMessage[]
-//     * @throws \Exception
-//     */
-//    public function pullQueue(int $count, int $agoSecond, int $laterSecond)
-//    {
-//        $pull = $this->createNativeNamedQuery('pull');
-//        $pull->setParameter('limit', $count);
-//        $pull->setParameter('fromDate', new \DateTime("-$agoSecond seconds"));
-//        $pull->setParameter('tillDate', new \DateTime("+$laterSecond seconds"));
-//        $pull->setParameter('status', [SmsOutbox::STATUS_DELIVERED, SmsOutbox::STATUS_BLOCKED]);
-//
-//        return $pull->getResult();
-//    }
-//
-//    private function addPullQuery()
-//    {
-//        /**
-//         * (
-//        sms_outbox. STATUS IS NULL
-//        OR sms_outbox. STATUS = 0
-//        OR (
-//        sms_outbox. STATUS NOT IN (:status)
-//        AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(sms_outbox.send_time) >= sms_message.timeout
-//        )
-//        )
-//        AND
-//         */
-//
-//        $query = '
-//            SELECT
-//                *,
-//                count(message_id) AS try_count,
-//                max(send_time) AS send_time
-//            FROM
-//                (
-//                    SELECT
-//                        sms_message.*,
-//                        (sms_outbox.message_id) AS message_id,
-//                        sms_outbox.send_time AS send_time
-//                    FROM
-//                        sms_message
-//                    LEFT JOIN sms_outbox ON sms_message.id = sms_outbox.message_id
-//                    WHERE
-//                        (sms_message.time BETWEEN :fromDate AND :tillDate)
-//                        AND sms_message.status not in (:status)
-//                    ORDER BY
-//                        sms_message.priority DESC,
-//                        sms_outbox.send_time DESC
-//                ) AS res
-//            GROUP BY
-//                res.id
-//            HAVING
-//                (res.max_try_count IS NULL
-//                  OR try_count < res.max_try_count)
-//                AND (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(send_time) >= res.timeout)
-//            LIMIT :limit';
-//
-//        $query = '
-//            SELECT
-//                sms_message.*,
-//                MAX(send_time) AS send_time,
-//                COUNT(message_id) AS try_count
-//            FROM
-//                sms_message
-//            LEFT JOIN sms_outbox ON sms_message.id = sms_outbox.message_id
-//            WHERE
-//                (sms_message.time BETWEEN :fromDate AND :tillDate)
-//                AND sms_message.status not in (:status)
-//            GROUP BY id
-//            HAVING (max_try_count IS NULL
-//                OR try_count < max_try_count)
-//                AND (UNIX_TIMESTAMP() - UNIX_TIMESTAMP(send_time) >= timeout)
-//            ORDER BY sms_message.priority DESC , send_time DESC
-//            LIMIT :limit
-//        ';
-//
-//        $this->getClassMetadata()->addNamedNativeQuery(['name' => 'pull', 'query' => $query, 'resultClass' => EmailMessage::class]);
-//    }
+    /**
+     * @param int $count
+     * @param int $agoSecond
+     * @param int $laterSecond
+     * @return EmailMessage[]
+     * @throws \Exception
+     */
+    public function pullQueue(int $count, int $agoSecond, int $laterSecond)
+    {
+        $qb = $this->createQueryBuilder('em');
+        $qb->where($qb->expr()->between('em.time', ':fromDate', ':tillDate'))
+            ->andWhere($qb->expr()->eq('em.status', ':status'))
+            ->setParameter('fromDate', new \DateTime("-$agoSecond seconds"))
+            ->setParameter('tillDate', new \DateTime("+$laterSecond seconds"))
+            ->setParameter('status', EmailMessage::STATUS_PREPARE)
+            ->setMaxResults($count);
+
+        return $qb->getQuery()
+            ->getResult();
+    }
 }
