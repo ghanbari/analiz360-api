@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use ApiPlatform\Core\Bridge\Doctrine\EventListener\PurgeHttpCacheListener;
 use App\Crawler\AlexaCrawler;
 use App\Crawler\Crawler;
 use App\Entity\Backlink;
@@ -113,6 +114,8 @@ class AlexaCommand extends Command
     // TODO: insert total alexa call in db
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->removeCacheTagListener();
+
         $today = date('d');
         $io = new SymfonyStyle($input, $output);
 
@@ -443,5 +446,26 @@ class AlexaCommand extends Command
         }
 
         return true;
+    }
+
+    private function removeCacheTagListener()
+    {
+        $searchedListener = null;
+        $em = $this->doctrine->getManager();
+        foreach ($em->getEventManager()->getListeners() as $event => $listeners) {
+            foreach ($listeners as $key => $listener) {
+                if ($listener instanceof PurgeHttpCacheListener) {
+                    $searchedListener = $listener;
+                    break 2;
+                }
+            }
+        }
+
+        if ($searchedListener) {
+            $evm = $em->getEventManager();
+            $evm->removeEventListener(array('preUpdate'), $searchedListener);
+            $evm->removeEventListener(array('onFlush'), $searchedListener);
+            $evm->removeEventListener(array('postFlush'), $searchedListener);
+        }
     }
 }
