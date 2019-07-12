@@ -70,6 +70,16 @@ class SendOneTimePasswordAction extends AbstractController
         $this->configs = $parameters->get('registration');
     }
 
+    /**
+     * @param OneTimePassword $data
+     *
+     * @return JsonResponse
+     *
+     * @throws \Exception
+     *
+     * TODO: get another post params(strict) + add recaptcha
+     * TODO: when strict is true, check if phone number is not exists, return error
+     */
     public function __invoke(OneTimePassword $data)
     {
         $data->setIp($this->requestStack->getMasterRequest()->getClientIp());
