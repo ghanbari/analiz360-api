@@ -3,9 +3,9 @@
 namespace App\Api\Dto;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Core\Serializer\Filter\PropertyFilter;
 use App\Controller\GetDomainStatisticsAction;
 use App\Entity\Domain;
@@ -42,7 +42,7 @@ final class DomainStatistics
     public $globalRank;
 
     /**
-     * @var int
+     * @var array
      */
     public $globalRanks;
 
@@ -52,22 +52,22 @@ final class DomainStatistics
     public $localRank;
 
     /**
-     * @var int
+     * @var array
      */
     public $localRanks;
 
     /**
-     * @var int
+     * @var array
      */
     public $bounceRates;
 
     /**
-     * @var int
+     * @var array
      */
     public $pageViews;
 
     /**
-     * @var int
+     * @var array
      */
     public $timeOnSites;
 

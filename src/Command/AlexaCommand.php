@@ -463,9 +463,9 @@ class AlexaCommand extends Command
 
         if ($searchedListener) {
             $evm = $em->getEventManager();
-            $evm->removeEventListener(array('preUpdate'), $searchedListener);
-            $evm->removeEventListener(array('onFlush'), $searchedListener);
-            $evm->removeEventListener(array('postFlush'), $searchedListener);
+            $evm->removeEventListener(['preUpdate'], $searchedListener);
+            $evm->removeEventListener(['onFlush'], $searchedListener);
+            $evm->removeEventListener(['postFlush'], $searchedListener);
         }
     }
 }

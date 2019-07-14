@@ -198,7 +198,9 @@ class EmailMessage
 
     public function getMessage()
     {
-        $placeholders = array_map(function ($parameter) { return sprintf('{%s}', $parameter); }, $this->getTemplate()->getParameters());
+        $placeholders = array_map(function ($parameter) {
+            return sprintf('{%s}', $parameter);
+        }, $this->getTemplate()->getParameters());
 
         return str_replace($placeholders, $this->getArguments(), $this->getTemplate()->getTemplate());
     }

@@ -59,7 +59,6 @@ class EmailMessageHandler implements MessageHandlerInterface
             ->html($message->getMessage())
             ->from($message->getSenderEmail() ?? $this->defaultSender);
 
-
         $this->sender->send($email);
         $message->setStatus(EmailMessage::STATUS_SENT);
 

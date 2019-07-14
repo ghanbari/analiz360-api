@@ -42,7 +42,9 @@ class EmailMessageRepository extends ServiceEntityRepository
      * @param int $count
      * @param int $agoSecond
      * @param int $laterSecond
+     *
      * @return EmailMessage[]
+     *
      * @throws \Exception
      */
     public function pullQueue(int $count, int $agoSecond, int $laterSecond)

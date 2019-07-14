@@ -74,7 +74,7 @@ class GetDomainStatisticsAction extends AbstractController
             $statistic->localRank = $this->getLocalRank($domain);
         }
 
-        if (empty($properties) or in_array('localRank', $properties)) {
+        if (empty($properties) or in_array('localRanks', $properties)) {
             $statistic->localRanks = $this->getLocalRanks($domain, $from, $till);
         }
 
