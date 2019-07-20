@@ -26,18 +26,18 @@ final class Version20190524111552 extends AbstractMigration
         $this->addSql("
             CREATE PROCEDURE `detect_new_domains`(p_from_date date, p_till_date date)
             BEGIN
-            DECLARE v_domain_exists INT DEFAULT 0;
+              DECLARE v_domain_exists INT DEFAULT 0;
               DECLARE v_finished INT DEFAULT 0;
               DECLARE v_domain VARCHAR(100);
               DECLARE get_domains_cursor CURSOR FOR
                         SELECT un.domain
                         FROM
                         (
-                            SELECT DISTINCT domain FROM `upstream` u INNER JOIN report r ON u.report_id = r.id INNER JOIN geography g ON g.report_id = r.id INNER JOIN country c ON g.country_id = c.id WHERE c.alpha2 = 'ir' AND r.date BETWEEN p_from_date AND p_till_date
+                            SELECT DISTINCT domain FROM `upstream` u INNER JOIN report r ON u.report_id = r.id INNER JOIN geography g ON g.report_id = r.id INNER JOIN country c ON g.country_id = c.id WHERE c.alpha2 IN ('ir', 'iq', 'af', 'tr', 'tm', 'tj', 'pk') AND r.date BETWEEN p_from_date AND p_till_date
                             UNION
-                            SELECT domain FROM backlink b INNER JOIN report r ON b.report_id = r.id  INNER JOIN geography g ON g.report_id = r.id INNER JOIN country c ON g.country_id = c.id WHERE c.alpha2 = 'ir' AND r.date BETWEEN p_from_date AND p_till_date
+                            SELECT domain FROM backlink b INNER JOIN report r ON b.report_id = r.id  INNER JOIN geography g ON g.report_id = r.id INNER JOIN country c ON g.country_id = c.id WHERE c.alpha2 IN ('ir', 'iq', 'af', 'tr', 'tm', 'tj', 'pk') AND r.date BETWEEN p_from_date AND p_till_date
                             UNION
-                            SELECT related_with FROM related_domain rd INNER JOIN report r ON r.domain_id = rd.domain_id INNER JOIN geography g ON g.report_id = r.id INNER JOIN country c ON g.country_id = c.id WHERE c.alpha2 = 'ir' AND created_at BETWEEN p_from_date AND p_till_date
+                            SELECT related_with FROM related_domain rd INNER JOIN report r ON r.domain_id = rd.domain_id INNER JOIN geography g ON g.report_id = r.id INNER JOIN country c ON g.country_id = c.id WHERE c.alpha2 IN ('ir', 'iq', 'af', 'tr', 'tm', 'tj', 'pk') AND created_at BETWEEN p_from_date AND p_till_date
                         ) un
                         WHERE
                             un.domain NOT IN (SELECT d.domain FROM domain d);
