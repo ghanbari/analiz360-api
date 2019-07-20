@@ -28,13 +28,13 @@ class ScheduleMessageCommand extends Command
      * SmsTemplateCommand constructor.
      *
      * @param RegistryInterface $doctrine
-     * @param LoggerInterface   $logger
+     * @param LoggerInterface   $messengerLogger
      */
-    public function __construct(RegistryInterface $doctrine, LoggerInterface $logger)
+    public function __construct(RegistryInterface $doctrine, LoggerInterface $messengerLogger)
     {
         parent::__construct();
         $this->doctrine = $doctrine;
-        $this->logger = $logger;
+        $this->logger = $messengerLogger;
     }
 
     protected function configure()

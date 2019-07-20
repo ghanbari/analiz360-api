@@ -64,6 +64,7 @@ services:
             $crawlerLogger: '@monolog.logger.crawler'
             $auditLogger: '@monolog.logger.audit'
             $proxyLogger: '@monolog.logger.proxy'
+            $messengerLogger: '@monolog.logger.messenger'
 
     _instanceof:
         App\Crawler\DomainAnalyzerInterface:

@@ -1,89 +1,24 @@
-# Processors:
-#   web:
-#       WebProcessor (symfony version)
-#       TokenProcessor
-#       RouteProcessor
-#   cli:
-#       ProcessIdProcessor
-#       UidProcessor reset uid at begin of every loop
-#       domainName
-#       ConsoleCommandProcessor
-#   global:
-#       PsrLogMessage
-#       IntrospectionProcessor
-#       MemoryUsageProcessor
-#       DebugProcessor
-
-# Handlers:
-#   web_access:
-#       rotating_file
-#   alexa_access:
-#       rotating_file
-#   audit_access:
-#       rotating_file
-#   proxy_access:
-#       rotating_file
-#   alexa_errors:
-#       FingersCrossedHandler: error
-#   alexa_errors_sample:
-#       SamplingHandler:
-#           FingersCrossedHandler: error
-#           FilterHandler: error
-#   web_errors:
-#       DeduplicationHandler:
-
 monolog:
-    channels: ['crawler', 'audit', 'proxy', 'alexa']
+    channels: ['crawler', 'audit', 'proxy', 'alexa', 'messenger']
     handlers:
-        access:
-            type: rotating_file #replace with redis
-            path: "%kernel.logs_dir%/%kernel.environment%.log"
-            level: info
-            channels: ['!event']
-        cli_access:
-            type: rotating_file #replace with redis
-            path: "%kernel.logs_dir%/cli/%kernel.environment%.log"
-            level: info
-            channels: ['alexa', 'crawler', 'audit', 'console', 'doctrine', 'http_client', 'proxy']
-        alexa_access: #replace with redis
+        errors:
+            type: fingers_crossed
+            handler: errors_file
+            action_level: warning
+            channels: ['!alexa', '!crawler', '!proxy', '!audit']
+        errors_file:
             type: rotating_file
-            path: "%kernel.logs_dir%/alexa/%kernel.environment%_access.log"
-            level: info
-            channels: ['alexa', 'crawler']
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+            formatter: Monolog\Formatter\JsonFormatter
+            channels: ['!alexa', '!crawler', '!proxy', '!audit']
         alexa_error:
             type: fingers_crossed
             handler: alexa_error_file
-            action_level: error
+            action_level: warning
             channels: ['alexa', 'crawler']
         alexa_error_file:
             type: rotating_file
             path: "%kernel.logs_dir%/alexa/%kernel.environment%_error.log"
-            level: error
+            level: debug
             formatter: Monolog\Formatter\JsonFormatter
-        console:
-            type:   console
-            channels: ['!event', '!doctrine', '!console']
-#
-#        crossed_file:
-#            type: fingers_crossed
-#            handler: file
-#            action_level: info
-#            excluded_404s: ["^/"]
-#            channels: ['!event']
-#        file:
-#            type: rotating_file
-#            path: "%kernel.logs_dir%/%kernel.environment%.log"
-#            level: debug
-#        crossed:
-#            type: fingers_crossed
-#            handler: deduplicated
-#            action_level: error
-#            excluded_404s: ["^/"]
-#            channels: ['crawler']
-#        deduplicated:
-#            type: deduplication
-#            handler: rollbar
-#        rollbar:
-#            type: rollbar
-#            token: 262902dc1f454b158baae411521fb9b2
-#            level: ERROR

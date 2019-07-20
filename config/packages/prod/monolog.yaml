@@ -1,5 +1,5 @@
 monolog:
-    channels: ['crawler', 'audit', 'proxy', 'alexa']
+    channels: ['crawler', 'audit', 'proxy', 'alexa', 'messenger']
     handlers:
         errors:
             type: fingers_crossed
@@ -11,6 +11,7 @@ monolog:
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: info
             formatter: Monolog\Formatter\JsonFormatter
+            channels: ['!alexa', '!crawler', '!proxy', '!audit']
         alexa_error:
             type: fingers_crossed
             handler: alexa_error_file

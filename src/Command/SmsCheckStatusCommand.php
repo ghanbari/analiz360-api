@@ -50,18 +50,18 @@ class SmsCheckStatusCommand extends Command
      *
      * @param ParameterBagInterface $parameters
      * @param RegistryInterface     $doctrine
-     * @param LoggerInterface       $logger
+     * @param LoggerInterface       $messengerLogger
      * @param SmsProviderInterface  $sms
      */
     public function __construct(
         ParameterBagInterface $parameters,
         RegistryInterface $doctrine,
-        LoggerInterface $logger,
+        LoggerInterface $messengerLogger,
         SmsProviderInterface $sms
     ) {
         parent::__construct();
         $this->doctrine = $doctrine;
-        $this->logger = $logger;
+        $this->logger = $messengerLogger;
         $this->provider = $sms;
         $this->parameters = $parameters;
 

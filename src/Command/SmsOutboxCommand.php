@@ -46,18 +46,18 @@ class SmsOutboxCommand extends Command
      * @param ParameterBagInterface $parameters
      * @param RegistryInterface     $doctrine
      * @param SmsProviderInterface  $sender
-     * @param LoggerInterface       $logger
+     * @param LoggerInterface       $messengerLogger
      */
     public function __construct(
         ParameterBagInterface $parameters,
         RegistryInterface $doctrine,
         SmsProviderInterface $sender,
-        LoggerInterface $logger
+        LoggerInterface $messengerLogger
     ) {
         parent::__construct();
         $this->doctrine = $doctrine;
         $this->sender = $sender;
-        $this->logger = $logger;
+        $this->logger = $messengerLogger;
 
         $config = $parameters->get('sms');
         $this->timeout = isset($config['sender']['timeout']) ? $config['sender']['timeout'] : 300;
