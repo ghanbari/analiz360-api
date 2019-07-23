@@ -52,7 +52,7 @@ final class Version20190613121920 extends AbstractMigration
             END;
         ");
         $this->addSql('
-            CREATE PROCEDURE `remove_inactive_domains5`()
+            CREATE PROCEDURE `remove_inactive_domains`()
             BEGIN
                 DECLARE v_finished INT DEFAULT 0;
                 DECLARE v_domain_id INT;
